@@ -6,8 +6,9 @@
 }
 
 .course-actions {
-    display: flex;
+  display: flex;
   justify-content: center;
+  margin-bottom: 1rem;
 }
 
 .course-actions button {
@@ -27,5 +28,5 @@
 
 mat-card-content p {
   padding: 10px;
-}
 
+}

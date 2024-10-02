@@ -1,6 +1,79 @@
 <div [formGroup]="form" class="course-details-form">
+  <!--============ INPUTS============= -->
+  <mat-form-field>
+    <mat-label>Course Title</mat-label>
+    <input matInput formControlName="title" #title>
+    
+    <!-- Pequeña descripcion del input -->
+    <mat-hint align="end">{{title.value.length}}/60</mat-hint>
 
+    <!-- Para manejo de errores -->
+    @if ( courseTitle.errors?.minlength) {
+      <mat-error>
+        A minimum length of 5 characters is required
+      </mat-error>
+    }
 
+  </mat-form-field>
+
+  <!--============ RADIO BUTTON ============= -->
+<!-- mat-radio-group no es necesario envolverlo en un mat-form-field -->
+  <mat-radio-group class="course-type" formControlName="courseType">
+    <mat-radio-button value="free">Free</mat-radio-button>
+    <mat-radio-button value="premium">Premium</mat-radio-button>
+  </mat-radio-group>
+
+  <!--============ SELECT BOX ============= -->
+
+  <mat-form-field appearance="fill">
+    <!--multiple, se añade para elegir multiples opciones  -->
+    <!-- <mat-select formControlName="category" placeholder="Select category" multiple> -->
+    <mat-select formControlName="category" placeholder="Select category">
+      <!-- Group option -->
+      <mat-optgroup label="Begginers">
+        <mat-option value="newtoprogramming">New to Programming</mat-option>
+        <mat-option value="newtojavascript">New to Javascript</mat-option>
+        <mat-option value="newtoangular">New to Angular</mat-option>
+      </mat-optgroup>
+
+    
+      <mat-option value="intermediate">Intermediate</mat-option>
+      <mat-option value="advanced">Advanced</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+    <!--============ DATE PICKER ============= -->
+
+    <mat-form-field appearance="outline">
+      <!-- [matDatepicker] enlaza con el mat-datepicker a traves de releaseAtPicker-->
+      <input matInput formControlName="releasedAt" placeholder="Released date" [matDatepicker]="releaseAtPicker">
+
+      <!-- mat-datepicker-toggle enlaza con mat-datepicker a traves de releaseAtPicker-->
+       <!-- matSuffix pone al final el icono -->
+      <mat-datepicker-toggle matSuffix [for]="releaseAtPicker"></mat-datepicker-toggle>
+
+      <mat-datepicker #releaseAtPicker [dateClass]="dateClass">
+      </mat-datepicker>
+    </mat-form-field>
+
+     <!--============ CHECK BOX ============= -->
+     <!-- indeterminate no es falso ni verdadero, es indeterminado si es true -->
+    <!-- <mat-checkbox color="primary" formControlName="downloadsAllowed" [indeterminate]="true"> -->
+    <mat-checkbox color="primary" formControlName="downloadsAllowed">
+      Downloads allowed?
+    </mat-checkbox>
+
+    <!--============ TEXT AREA ============= -->
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <!-- cdkTextareaAutosize para que el alto sea al tamaño del contenido, no se permite redimensionarl el campo -->
+      <!-- cdkAutosizeMinRows, minimo de filas a mostrar -->
+      <!-- cdkAutosizeMaxRows, maximo de filas a mostrar, para ver el resto se tiene que desplazar -->
+      <textarea matInput formControlName="longDescription"
+        cdkTextareaAutosize
+        [cdkAutosizeMinRows]="2"
+        [cdkAutosizeMaxRows]="5"></textarea>
+    </mat-form-field>
 </div>
 
 

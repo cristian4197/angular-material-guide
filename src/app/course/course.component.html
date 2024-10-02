@@ -4,10 +4,92 @@
 
   <img class="course-thumbnail mat-elevation-z8" [src]="course?.iconUrl">
 
+  <div class="spinner-container">
+    @if (!load) {
+      <mat-spinner></mat-spinner>
+    }
+  </div>
+
 </div>
+<!-- ==============DATATABLE============= -->
+ @if (load) {
+  -<table mat-table
+        class="lessons
+        mat-mdc-elevation-specific
+        mat-elevation-z8
+        limited-width-table
+        lessons-table"
+        [dataSource]="dataSource"
+        multiTemplateDataRows
+        >
 
+    <!-- AÑADIMOS LA COLUMNA PARA SELECCIONAR FILAS -->
 
+    <ng-container matColumnDef="select">
+      <!-- Seleccion total de filas -->
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-checkbox 
+        (change)="onToggleSelectAll()"
+        [checked]="isAllSelected()"
+        [indeterminate]="isSomeSelected()">
 
+        </mat-checkbox>
+      </th>
 
+      <!-- Seleccion individual -->
+      <td mat-cell *matCellDef="let lesson" (click)="$event.stopPropagation()">
+        <mat-checkbox
+          (change)="onLessonToogle(lesson)"
+          [checked]="selection.isSelected(lesson)"></mat-checkbox>
+      </td>
+    </ng-container>
 
+        <!-- multiTemplateDataRows, para mostrar un contenido adicional en la fila -->
+    <!-- Definimos nuestras columnas -->
+     <!-- Enlazo el nombre de la columna que defini en mi ts -->
+    <ng-container matColumnDef="seqNo">
+      <!-- Nombre a mostrar de la columna -->
+        <th mat-header-cell *matHeaderCellDef>#</th>
+        <!-- Dato a mostrar en la celda de la columna -->
+         <!--lesson, es la referencia de los datos a mostrar por fila de cada item de nuestro array, de alli extraemos el seqNo -->
+        <td mat-cell *matCellDef="let lesson">{{lesson.seqNo}}</td>
+    </ng-container>
 
+    <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef>Description</th>
+        <td mat-cell *matCellDef="let lesson">{{lesson.description}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="duration">
+        <th mat-header-cell *matHeaderCellDef>Duration</th>
+        <td class="duration-cell" mat-cell *matCellDef="let lesson">{{lesson.duration}}</td>
+    </ng-container>
+
+    <!-- Columna Expandible -->
+    <ng-container matColumnDef="expandedDetail">
+        <td class="duration-cell" mat-cell *matCellDef="let lesson" colspan="4">{{lesson.longDescription}}</td>
+    </ng-container>
+
+    <!-- Proporcionamos la plantilla para las filas de la tabla -->
+ <!-- Encabezado de la tabla -->
+    <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+
+    <tr mat-row *matRowDef="let lesson; columns: displayColumns"
+      (click)="onToogleLesson(lesson)"></tr>
+
+    <!-- expandedDetail, definimos una nueva columna, que ocupara las 3 columnas actuales -->
+    <tr mat-row *matRowDef="let lesson; columns: ['expandedDetail']"
+      [class.collapsed-detail]="lesson != expandedLesson"></tr>
+
+   
+</table>
+
+<mat-paginator
+  class="container-paginator mat-mdc-elevation-specific mat-elevation-z8"
+  [length]="course?.lessonsCount"
+  [pageSize]="3"
+  [pageSizeOptions]="[3, 5, 10]"
+  showFirstLastButtons>
+</mat-paginator>
+
+ }

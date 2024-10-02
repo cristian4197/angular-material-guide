@@ -44,11 +44,12 @@
   }
 }
 
-mat-paginator {
-  width: 400px;
-  padding-bottom: 10px;
-  margin-bottom: 100px;
-}
+// mat-paginator {
+//   width: 400px;
+//   padding-bottom: 10px;
+//   margin-bottom: 100px;
+//   margin-top: 50px;
+// }
 
 .spinner-container mat-spinner {
   margin: 130px auto 0 auto;
@@ -68,4 +69,20 @@ mat-paginator {
 
 .mat-column-duration {
   font-style: italic;
+}
+
+.limited-width-table {
+  // max-width: 600px!important; /* Cambia esto por el ancho deseado */
+  min-width: 80%; /* Asegura que se ajuste dentro del contenedor */
+  margin: 0 auto; /* Centrar la tabla horizontalmente */
+}
+
+
+.container-paginator {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.collapsed-detail {
+  display: none;
 }

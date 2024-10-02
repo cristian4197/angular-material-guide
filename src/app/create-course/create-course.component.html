@@ -2,6 +2,41 @@
 
   <h2 class="title">Create New Course</h2>
 
+   <!--============ MAT STEPPER ============= -->
+  <!-- FORMULARIO CON PASOS -->
+   <!-- Tambien existe uno vertical -->
+    <!--linear: los usuarios deben completar cada paso en orden secuencial -->
+    <mat-horizontal-stepper
+        class="mat-mdc-elevation-specific mat-elevation-z5"
+        labelPosition="bottom"
+        [linear]="true">
+        <!-- INICIO DE PASO 1 -->
+        <mat-step errorMessage="Course details in error">
+          <ng-template matStepLabel> Course Detail</ng-template>
+          
+          <create-course-step-1></create-course-step-1>
+
+          <div class="stepper-button">
+            <!-- matStepperNext, indica que debemos pasar al siguiente Paso -->
+            <button mat-raised-button color="primary" matStepperNext>Add Course Lessons</button>
+          </div>
+        </mat-step>
+        <!-- FIN DE PASO 1 -->
+
+         <!-- INICIO DE PASO 2 -->
+        <mat-step errorMessage="Course Lessons in error">
+          <ng-template matStepLabel> Course Lessons</ng-template>
+
+          <create-course-step-2></create-course-step-2>
+
+          <div class="stepper-button btn-justify-end">
+            <!-- matStepperNext, indica que debemos pasar al siguiente Paso -->
+            <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+            <button mat-raised-button color="accent" matStepperPrevious>Create Course</button>
+          </div>
+        </mat-step>
+        <!-- FIN DE PASO 2 -->
+    </mat-horizontal-stepper>
 
 </div>
 

@@ -4,12 +4,30 @@
   <div class="header">
 
     <h2 class="title">All Courses</h2>
-
-    <button mat-mini-fab routerLink="/add-new-course">
+      <!--======== TOOLTIP =========-->
+      <!-- matTooltipPosition(right, left, above, below, before, after), maneja la posicion del tooltip -->
+       <!-- matTooltipShowDelay, tiempo que espera para visualizar el tooltip en ms -->
+       <!-- matTooltipHideDelay, tiempo que espera para ocultar el tooltip en ms-->
+       <!-- matTooltipDisabled, para desabilitar el tooltip-->
+    <button mat-mini-fab routerLink="/add-new-course"
+            [matTooltip]="'Create course'"
+            matTooltipPosition="below"
+            [matTooltipShowDelay]="1000"
+            [matTooltipHideDelay]="1000"
+            [matTooltipDisabled]="false">
       <mat-icon class="add-course-btn">add</mat-icon>
     </button>
 
   </div>
+
+  <mat-tab-group>
+    <mat-tab label="Beginers">
+      <courses-card-list [courses]="beginnerCourses$ | async"></courses-card-list>
+    </mat-tab>
+    <mat-tab label="Advanced" >
+      <courses-card-list [courses]="advancedCourses$ | async"></courses-card-list>
+    </mat-tab>
+  </mat-tab-group>
 
 
 </div>

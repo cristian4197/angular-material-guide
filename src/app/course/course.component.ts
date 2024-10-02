@@ -1,118 +1,131 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from "@angular/router";
 import { MatPaginator } from "@angular/material/paginator";
-import { MatSort } from "@angular/material/sort";
-import { MatTableDataSource } from "@angular/material/table";
-import {Course} from "../model/course";
-import {CoursesService} from "../services/courses.service";
-import {debounceTime, distinctUntilChanged, startWith, tap, delay} from 'rxjs/operators';
-import {merge, fromEvent} from "rxjs";
-
+import { Course } from "../model/course";
+import { CoursesService } from "../services/courses.service";
+import { tap, catchError } from 'rxjs/operators';
+import { throwError } from "rxjs";
+import { Lesson } from '../model/lesson';
+import { MatTableDataSource } from '@angular/material/table';
+import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
-    selector: 'course',
-    templateUrl: './course.component.html',
-    styleUrls: ['./course.component.scss']
+  selector: 'course',
+  templateUrl: './course.component.html',
+  styleUrls: ['./course.component.scss']
 })
 export class CourseComponent implements OnInit, AfterViewInit {
+  
+  course: Course;
+  dataSource = new MatTableDataSource<Lesson>();
+  load: boolean = false;
+  displayColumns = ['select', 'seqNo', 'description', 'duration'];
+  expandedLesson: Lesson = null;
 
-    course:Course;
+  // Parámetros para la paginación
+  pageSize: number = 3;
+  totalItems: number = 0; // Número total de elementos en el backend
+  pageCurrent: number = 0;
 
-    lessons = [
-       {
-        id: 120,
-        'description': 'Introduction to Angular Material',
-        'duration': '4:17',
-        'seqNo': 1,
-        courseId: 11
-      },
-      {
-        id: 121,
-        'description': 'Navigation and Containers',
-        'duration': '6:37',
-        'seqNo': 2,
-        courseId: 11
-      },
-      {
-        id: 122,
-        'description': 'Data Tables',
-        'duration': '8:03',
-        'seqNo': 3,
-        courseId: 11
-      },
-      {
-        id: 123,
-        'description': 'Dialogs and Overlays',
-        'duration': '11:46',
-        'seqNo': 4,
-        courseId: 11
-      },
-      {
-        id: 124,
-        'description': 'Commonly used Form Controls',
-        'duration': '7:17',
-        'seqNo': 5,
-        courseId: 11
-      },
-      {
-        id: 125,
-        'description': 'Drag and Drop',
-        'duration': '8:16',
-        'seqNo': 6,
-        courseId: 11
-      },
-      {
-        id: 126,
-        'description': 'Responsive Design',
-        'duration': '7:28',
-        'seqNo': 7,
-        courseId: 11
-      },
-      {
-        id: 127,
-        'description': 'Tree Component',
-        'duration': '11:09',
-        'seqNo': 8,
-        courseId: 11
-      },
-      {
-        id: 128,
-        'description': 'Virtual Scrolling',
-        'duration': '3:44',
-        'seqNo': 9,
-        courseId: 11
-      },
-      {
-        id: 129,
-        'description': 'Custom Themes',
-        'duration': '8:55',
-        'seqNo': 10,
-        courseId: 11
-      },
-      {
-        id: 130,
-        'description': 'Changing Theme at Runtime',
-        'duration': '12:37',
-        'seqNo': 11,
-        courseId: 11
-      }
-    ];
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
-    constructor(private route: ActivatedRoute,
-                private coursesService: CoursesService) {
+  // Para selección de datos en la tabla
+  // Primer parametros es si se permita la seleccion multiple de filas
+  // La segunda es la fila inicial seleccionada
+  selection = new SelectionModel<Lesson>(true, []);
 
+  constructor(
+    private route: ActivatedRoute, 
+    private coursesService: CoursesService,  
+    private cd: ChangeDetectorRef
+  ) {}
+
+  ngOnInit() {
+    this.course = this.route.snapshot.data["course"];
+    // Carga inicial
+    this.loadLessonsPage();
+  }
+
+  // Método para cargar las lecciones con paginación
+  loadLessonsPage(): void {
+    const pageIndex = this.paginator ? this.paginator.pageIndex : this.pageCurrent;
+    const pageSize = this.paginator ? this.paginator.pageSize : this.pageSize;
+
+    this.coursesService.findLessons(
+      this.course.id,
+      'asc',
+      pageIndex,    // Página actual
+      pageSize      // Tamaño de la página
+    )
+    .pipe(
+      tap((lessons) => {
+        this.dataSource.data = lessons; // Asignar las lecciones al dataSource
+        this.totalItems = lessons.length; // Total de elementos
+        this.load = true; // Marca que la carga se completó
+      }),
+      catchError((err) => {
+        console.error('Error loading lessons ', err);
+        return throwError(err);
+      })
+    )
+    .subscribe();
+  }
+
+  ngAfterViewInit() {
+    if (this.paginator) {
+      this.dataSource.paginator = this.paginator;
+      
+      // Escuchar cambios en el paginador
+      this.paginator.page
+        .pipe(
+          tap(() => this.loadLessonsPage()) // Cargar lecciones cada vez que se cambie de página
+        )
+        .subscribe();
+    } else {
+      console.error('Paginator not initialized!');
+    }
+    
+    this.cd.detectChanges(); // Asegurarse de que el paginator esté correctamente sincronizado
+  }
+
+  // Metodo para expandir detalle de filas
+  onToogleLesson(lesson:Lesson): void {
+    if(lesson === this.expandedLesson) {
+      this.expandedLesson = null;
+    }else {
+      this.expandedLesson = lesson;
     }
 
-    ngOnInit() {
+  }
 
-        this.course = this.route.snapshot.data["course"];
+  onLessonToogle(lesson:Lesson): void {
+    this.selection.toggle(lesson);
 
+    console.log(this.selection.selected);
+    
+  }
 
-    }
+  // Verifica si todas las filas visibles están seleccionadas
+isAllSelected(): boolean {
+  const numSelected = this.selection.selected.length;
+  const numRows = this.dataSource.data.length;
+  return numSelected === numRows;
+}
 
-    ngAfterViewInit() {
+// Verifica si alguna fila visible está seleccionada (estado indeterminado)
+isSomeSelected(): boolean {
+  const numSelected = this.selection.selected.length;
+  const numRows = this.dataSource.data.length;
+  return numSelected > 0 && numSelected < numRows;
+}
 
-
-    }
+// Maneja la selección o deselección de todas las filas visibles
+onToggleSelectAll(): void {
+  if (this.isAllSelected()) {
+    this.selection.clear(); // Deselecciona todas las filas
+  } else {
+    this.dataSource.data.forEach(row => this.selection.select(row)); // Selecciona todas las filas visibles
+  }
+}
 
 }

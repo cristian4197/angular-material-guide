@@ -22,7 +22,7 @@ import {  MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import {  MatSelectModule } from "@angular/material/select";
 import { MatSidenavModule } from "@angular/material/sidenav";
 import { MatSortModule } from "@angular/material/sort";
-import {  MatTableModule } from "@angular/material/table";
+import {  MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import {CoursesService} from "./services/courses.service";
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";

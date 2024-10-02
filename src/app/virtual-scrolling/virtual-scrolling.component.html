@@ -5,11 +5,28 @@
 
     <h3>Virtual Scrolling Demo</h3>
 
-    <mat-list class="scrolling-container mat-elevation-z7">
-      <mat-list-item *ngFor="let item of items"> {{item}} </mat-list-item>
+    <mat-list class="mat-elevation-z7">
+      <!-- Esto nos ayuda para evitar problemas de rendimiento al renderizar muchos items -->
+       <!--itemSize: tamaño en px del item  -->
+        <cdk-virtual-scroll-viewport itemSize="48" class="scrolling-container">
+
+            <mat-list-item *cdkVirtualFor="let item of items; let index = index;
+                    let count = count;
+                    let first = first;
+                    let last = last;
+                    let even = even;
+                    let odd = odd;">
+
+                {{item}}
+
+            </mat-list-item>
+
+
+        </cdk-virtual-scroll-viewport>
+
+
     </mat-list>
 
   </div>
 
 </div>
-

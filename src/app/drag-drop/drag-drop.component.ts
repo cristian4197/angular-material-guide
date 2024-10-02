@@ -90,4 +90,27 @@ export class DragDropComponent {
     }
   ];
 
+  done = [
+  ];
+
+  dropMultiList(event: CdkDragDrop<Lesson[]>) {
+    // Se suelta en el mismo contenedor
+    if(event.previousContainer == event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      )
+    }
+  }
+
+  drop(event: CdkDragDrop<Lesson[]>) {
+    // logica para arrastrar elemento en la misma lista
+    moveItemInArray(this.lessons, event.previousIndex, event.currentIndex);
+    
+  }
+
 }

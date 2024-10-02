@@ -1,16 +1,34 @@
-
-<div class="drag-drop-container">
+<!-- cdkDropListGroup sirve para poder arrastrar entre diferentes listas -->
+<div class="drag-drop-container" cdkDropListGroup>
 
   <div class="pending">
-
     <h3>Lessons To Watch:</h3>
 
+    <div cdkDropList class="lessons-list" 
+      [cdkDropListData]="lessons"
+      (cdkDropListDropped)="dropMultiList($event)">
+      @for (lesson of lessons; track $index) {
+        <div class="lesson drag-drop-item" cdkDrag>
+          <!-- Esto de aqui sera la zona de caida del card -->
+          <div class="drop-placeholder" *cdkDragPlaceholder></div>
+          {{lesson.description}}
+        </div>
+      }
+    </div>
   </div>
 
-  <!-- div class="done">
-
+  <div class="done">
     <h3>Done:</h3>
-
-  </div-->
-
+    <div cdkDropList class="lessons-list" 
+      [cdkDropListData]="done"
+      (cdkDropListDropped)="dropMultiList($event)">
+      @for (lesson of done; track $index) {
+        <div class="lesson drag-drop-item" cdkDrag>
+          <!-- Esto de aqui sera la zona de caida del card -->
+          <div class="drop-placeholder" *cdkDragPlaceholder></div>
+          {{lesson.description}}
+        </div>
+      }
+    </div>
+  </div>
 </div>
